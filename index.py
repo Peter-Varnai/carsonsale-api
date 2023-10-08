@@ -11,6 +11,7 @@ pd.set_option('display.width', None)
 
 app = FastAPI()
 
+
 @app.get("/")
 def home():
     return {'carsonsale.info'}
@@ -19,25 +20,34 @@ def home():
 @app.get("/{car_brands}")
 def index(car_brands: str):
     df = pd.read_csv('cars_on_sale.csv')
-    if '%' in car_brands:
-        print(car_brands)
-        data_list = []
-        brands_list = car_brands.split('%')
-        print(brands_list)
+    out = {}
+    data_list = []
+    cc_list = []
+    if ',' in car_brands:
+        brands_list = car_brands.split(',')
         for brand in brands_list:
-            df_filtered = df.loc[df.manufacturer == brand]
-            out = df_filtered.to_json(orient="records")
-            json_out = json.loads(out)
-            print(brand)
-            pprint(json_out)
-            data_list += json_out
-        return JSONResponse(data_list)
-    df = df.loc[df.manufacturer == car_brands]
-    out = df.to_json(orient='records')
-    json_out = json.loads(out)
-    return JSONResponse(json_out)
+            d = get_data(df, brand)
+            data_list += d[0]
+            cc_list += d[1]
+        cc_list = list(set(cc_list))
+    else:
+        d = get_data(df, car_brands)
+        data_list += d[0]
+        cc_list += d[1]
+    out["cc"] = cc_list
+    out["data"] = data_list
+    return JSONResponse(out)
+
+
+def get_data(df, brand):
+    df_filtered = df.loc[df.manufacturer == brand]
+    cc_codes = df_filtered.seller_country_code.unique().tolist()
+    df_filtered = df_filtered.to_json(orient="records")
+    json_out = json.loads(df_filtered)
+    return json_out, cc_codes
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app)
