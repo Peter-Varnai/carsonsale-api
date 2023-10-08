@@ -1,0 +1,21 @@
+{
+  "builds": [
+    {
+      "src": "index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.py",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+  ]
+}
