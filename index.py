@@ -19,6 +19,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+value_order = {
+    'date_of_manufacturing': 0,
+    'engine_power': 1,
+    'fuel_type': 2,
+    'latitude_coordinates': 3,
+    'longitude_coordinates': 4,
+    'manufacturer': 5,
+    'mileage': 6,
+    'price': 7,
+    'seller_country_code': 8
+}
+
 
 @app.get("/")
 def home():

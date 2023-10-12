@@ -1,4 +1,5 @@
 import pandas as pd
+from random import randint
 import numpy as np
 from pprint import pprint
 
@@ -37,29 +38,26 @@ df = pd.read_csv('../cars_on_sale.csv')
 #     json_out = json.loads(df_filtered)
 #     return json_out, cc_codes
 
-df = df.loc[df.manufacturer == 'audi'].sample(5)
-df_fil = df.to_json(orient='records')
-df_fil2 = df.to_json(orient='values')
 
-pprint(df_fil)
-pprint(df_fil2)
+# GENERATING RANDOM COLORS FOR CSS CLASSES
+# brand_list = df.manufacturer.unique().tolist()
+# for brand in brand_list:
+#     print(f'\n.{brand} path {{\n\tfill: rgb({randint(0, 255)}, {randint(0, 255)}, {randint(0, 255)})\n}}')
 
 
-value_order = {
-    'date_of_manufacturing': 1,
-    'engine_power': 2,
-    'fuel_type': 3,
-    'latitude_coordinates':4,
-    'longitude_coordinates': 5,
-    'manufacturer': 6,
-    'mileage': 7,
-    'price': 8,
-    'seller_country_code':9
-}
+def fuel_corrector(input):
+    if input == 'Electric/Gasoline' or input == 'Electric/Diesel':
+        return 'hybrid'
+    else:
+        return input.lower()
 
 
 
-# df.to_csv('cars_on_sale.csv', index = False)
+df.fuel_type = df.fuel_type.apply(fuel_corrector)
+
+
+
+df.to_csv('../cars_on_sale.csv', index = False)
 
 
 
