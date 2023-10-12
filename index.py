@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import json
 from pprint import pprint
@@ -10,6 +10,14 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
