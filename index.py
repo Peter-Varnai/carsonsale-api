@@ -28,6 +28,7 @@ def home():
 @app.get("/{car_brands}")
 def index(car_brands: str):
     df = pd.read_csv('cars_on_sale.csv')
+    df = df.drop(columns=['seller_location'])
     out = {}
     data_list = []
     cc_list = []
@@ -50,7 +51,7 @@ def index(car_brands: str):
 def get_data(df, brand):
     df_filtered = df.loc[df.manufacturer == brand]
     cc_codes = df_filtered.seller_country_code.unique().tolist()
-    df_filtered = df_filtered.to_json(orient="records")
+    df_filtered = df_filtered.to_json(orient="values")
     json_out = json.loads(df_filtered)
     return json_out, cc_codes
 
